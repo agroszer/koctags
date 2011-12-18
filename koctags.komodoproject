@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Komodo Project File - DO NOT EDIT -->
+<project id="e77ee005-1b15-43a0-ad0e-bb349ad34e1f" kpf_version="5" name="koctags.komodoproject">
+<folder id="f40a0ec7-21cd-4ff1-a0fa-62115ba1d04c" idref="e77ee005-1b15-43a0-ad0e-bb349ad34e1f" name="Project">
+</folder>
+<file id="52d7ae94-d14f-4871-bc4a-3ded30d9c43e" idref="f40a0ec7-21cd-4ff1-a0fa-62115ba1d04c" name="setup.xul" url="_prj_internal_/setup.xul">
+</file>
+<preference-set idref="e77ee005-1b15-43a0-ad0e-bb349ad34e1f">
+  <boolean id="configured">1</boolean>
+  <string id="import_exclude_matches">*.*~;*.bak;*.tmp;CVS;.#*;*.pyo;*.pyc;.svn;*%*;tmp*.html;.DS_Store;_prj_internal_</string>
+  <string id="import_include_matches"></string>
+  <boolean id="import_live">1</boolean>
+  <boolean id="import_recursive">1</boolean>
+  <string id="import_type">useFolders</string>
+</preference-set>
+</project>

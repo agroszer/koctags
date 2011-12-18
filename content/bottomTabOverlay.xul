@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+
+<overlay id="koctagsCTagsOverlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <!-- Komodo specific code -->
+  <script type="application/x-javascript"
+          src="chrome://komodo/content/library/logging.js" />
+  <script type="application/x-javascript"
+          src="chrome://komodo/content/library/uilayout.js" />
+
+  <script type="application/x-javascript"
+          src="chrome://koctags/content/common.js" />
+  <!--<script type="application/x-javascript"-->
+  <!--        src="chrome://koctags/content/ctags/ctagsTreeview.js" />-->
+  <!--<script type="application/x-javascript"-->
+  <!--        src="chrome://koctags/content/ctags/ctagsOverlay.js" />-->
+
+    <menupopup id="menu_view_tabs_popup">
+        <menuitem id="show_koctags_ctags_tab2"
+            observes="show_koctags_ctags_tab"
+            class="menuitem-iconic-wide"
+            oncommand="ko.uilayout.ensureTabShown('koctags_ctags_tab', true)"
+            label="CTags"
+            type="checkbox"
+            />
+    </menupopup>
+
+    <menupopup id="tabPicker_popup">
+        <menuitem id="show_koctags_ctags_tab"
+            oncommand="ko.uilayout.ensureTabShown('koctags_ctags_tab', true)"
+            label="CTags"
+            />
+    </menupopup>
+
+    <tabs id="output_tabs">
+        <!-- From Todo extensio: Need both onmousedown and onfocus to catch selection
+             by mouse and Ctrl[+Shift]+Tab -->
+        <tab id="koctags_ctags_tab"
+             label="CTags"
+             onmousedown="document.getElementById('koctags_ctags-treechildren').focus();"
+             onfocus="document.getElementById('koctags_ctags-treechildren').focus();" />
+    </tabs>
+
+    <tabpanels id="output_tabpanels">
+        <tabpanel id="koctags_ctags_tabpanel"
+                  orient="vertical"
+                  flex="1">
+
+            <vbox flex="1">
+                <hbox align="center">
+                    <label value="Find:" />
+                    <textbox id="koctags-bottomtab-findtext"
+                             onkeypress="gKoCtags.onFindKeypress(event)"
+                             tooltiptext="Enter text to lookup (exact case required) and press Enter"/>
+                    <button id="koctags-bottomtab-findbutton"
+                            class="button-toolbar-a"
+                            image="chrome://famfamfamsilk/skin/icons/wand.png"
+                            label="find"
+                            oncommand="gKoCtags.onGetDefinitionsBottomButton();"
+                            tooltiptext="Click to reload CTags" />
+                    <label value="CTag file:" />
+                    <button id="koctags-bottomtab-openfilebutton"
+                            class="button-toolbar-a"
+                            image="chrome://famfamfamsilk/skin/icons/folder.png"
+                            label="open"
+                            command="cmd_koctags_opentagfile"
+                            tooltiptext="Click to select a CTags file" />
+                    <button id="koctags-bottomtab-clearfilebutton"
+                            class="button-toolbar-a"
+                            image="chrome://famfamfamsilk/skin/icons/delete.png"
+                            label="clear"
+                            command="cmd_koctags_cleartagfile"
+                            tooltiptext="Click to clear the CTags file" />
+                    <textbox id="koctags-bottomtab-filename"
+                             flex="1"
+                             readonly="true"
+                             tooltiptext="Shows the CTag file path"/>
+                    <checkbox id="koctags-bottomtab-pinTagFile"
+                              label="pin"
+                              oncommand="gKoCtags.onPinBottomButton(event);"
+                              tooltiptext="Tick to fix the CTag file to the displayed one" />
+                </hbox>
+            <tree id="koctags-ctags-tree"
+                  flex="1"
+                  seltype="single"
+                  tooltiptext="Double click any item to open the referenced file"
+                  onkeypress="gKoCtags.onTreeKeypress(event)" >
+                <treecols>
+                    <treecol primary="true"
+                             crop="center"
+                             flex="8"
+                             persist="width"
+                             id="koctags_ctags-filename"
+                             label="Filename" />
+                    <splitter class="tree-splitter" />
+                    <treecol id="koctags_ctags-taginfo"
+                             flex="12"
+                             label="Info"
+                             persist="width" />
+                </treecols>
+                <treechildren id="koctags_ctags-treechildren"
+                              flex="1"
+                              ondblclick="gKoCtags.onTreeDblClick();"
+                              tooltiptext="Double click any item to open the referenced file" />
+            </tree>
+            </vbox>
+        </tabpanel>
+    </tabpanels>
+
+</overlay>

@@ -1,0 +1,40 @@
+#include "nsISupports.idl"
+
+[scriptable, uuid(1d8c4610-a452-11df-981c-0800200c9a66)]
+interface koICTagInfo : nsISupports
+{
+    attribute wstring tagname;
+    attribute wstring tagfile;
+    attribute wstring taginfo;
+
+    //we dont care about fpos here
+    //attribute PRUint32 fpos;
+};
+
+[scriptable, uuid(0d506c80-9dff-11df-981c-0800200c9a66)]
+interface nsIPykoCTags : nsISupports
+{
+    void getCompletion(in wstring fileName,
+                       in wstring text,
+                       in PRUint32 maxcount,
+                       out PRUint32 count,
+        [array, size_is(count), retval] out wstring uniquetags);
+
+    void getDefinitions(in wstring fileName,
+                        in wstring text,
+                        in wstring tagFileNameIn,
+                        out wstring tagFileNameOut,
+                        out PRUint32 count,
+        [array, size_is(count)] out koICTagInfo tags);
+
+    void pushSettings(in wstring tagFileName,
+                      in wstring tagFilePrefix);
+
+    //void get_possible_browsers(out PRUint32 count,
+    //    [retval, array, size_is(count)] out wstring paths);
+
+};
+
+
+//var c= Components.classes["@pyte.hu/koCTags;1"]. getService(Components.interfaces.nsIPykoCTags);
+//var result=c.getDefinitions("g:\\keas\\packages\\trunk\\keas.author\\src\\keas\\author\\catalog.py", "queryMultiAdapter", {});

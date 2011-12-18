@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+
+<window xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    orient="vertical"
+    onload="CTagsPreferencesOnLoad();">
+
+  <script type="application/x-javascript"
+          src="chrome://koctags/content/common.js" />
+  <script type="application/x-javascript"
+          src="chrome://koctags/content/commonPrefs.js" />
+  <script type="application/x-javascript"
+          src="chrome://koctags/content/prefs.js" />
+  <script type="application/x-javascript"
+          src="chrome://koctags/content/pref-page.js" />
+
+  <groupbox orient="vertical">
+    <caption label="Tag filename"/>
+
+    <textbox id="tagFileName"/>
+
+    <label value="Enter the VI format tag filename to look for." />
+    <label value="By default it is 'tags', leave it empty for default." />
+  </groupbox>
+
+  <groupbox orient="vertical">
+    <caption label="Tag filename prefix"/>
+
+    <textbox id="tagFilePrefix"
+             tooltiptext="Separate more prefixes with ;"/>
+
+    <label value="By default the tags file is searched by traversing up the folder hierarchy starting with the current file's folder" />
+    <label value="This option is useful for the following folder layout:" />
+    <label value="project/bin" />
+    <label value="project/src" />
+    <label value="project/parts" />
+    <label value="So if the sources are in 'src' and the tag file in 'parts', enter here 'parts'" />
+  </groupbox>
+
+  <checkbox id="pinTagFile" label="Pin CTag file"/>
+</window>

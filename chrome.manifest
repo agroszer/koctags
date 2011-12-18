@@ -1,0 +1,4 @@
+content koctags jar:koctags.jar!/content/ xpcnativewrappers=yes
+overlay chrome://komodo/content/komodo.xul      chrome://koctags/content/overlay.xul
+overlay chrome://komodo/content/komodo.xul      chrome://koctags/content/bottomTabOverlay.xul
+overlay	chrome://komodo/content/pref/pref.xul	chrome://koctags/content/prefOverlay.xul

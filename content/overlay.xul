@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+
+<overlay id="koctags_overlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+   <script type="application/x-javascript"
+           src="chrome://koctags/content/commonPrefs.js" />
+   <script type="application/x-javascript"
+           src="chrome://koctags/content/prefs.js" />
+   <script type="application/x-javascript"
+           src="chrome://koctags/content/common.js" />
+   <script type="application/x-javascript"
+           src="chrome://koctags/content/koctags.js" />
+
+   <broadcasterset id="broadcasterset_global">
+     <broadcaster
+       id="cmd_koctags_getdefinitions"
+       key="key_cmd_koctags_getdefinitions"
+       desc="Ctags get definitions"
+       oncommand="gKoCtags.onGetDefinitionsHotkey(event)"/>
+     <broadcaster
+       id="cmd_koctags_opentagfile"
+       key="key_cmd_koctags_opentagfile"
+       desc="Ctags open tag file"
+       oncommand="gKoCtags.onOpenFileBottomButton(event)"/>
+     <broadcaster
+       id="cmd_koctags_cleartagfile"
+       key="key_cmd_koctags_cleartagfile"
+       desc="Ctags clear tag file"
+       oncommand="gKoCtags.onClearFileBottomButton(event)"/>
+   </broadcasterset>
+
+    <menupopup id="popup_sourcecode">
+        <menuitem id="koctags-getdefinitions"
+                    class="menuitem-iconic-wide"
+                    label="Ctags get definitions"
+                    command="cmd_koctags_getdefinitions"
+                    key="key_cmd_koctags_getdefinitions"
+                    insertbefore="menu_goToDefinition"/>
+    </menupopup>
+
+
+
+</overlay>
