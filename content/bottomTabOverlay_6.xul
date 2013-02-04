@@ -68,6 +68,9 @@
                             label="clear"
                             command="cmd_koctags_cleartagfile"
                             tooltiptext="Click to clear the CTags file" />
+                    <textbox id="koctags-bottomtab-filter" emptytext="Filter" type="search"
+                            onkeypress="gKoCtags.treeView.filterKeypress(event)"
+                            oncommand="gKoCtags.treeView.filterArray()"/>
                     <textbox id="koctags-bottomtab-filename"
                              flex="1"
                              readonly="true"

@@ -395,6 +395,7 @@ window.addEventListener("unload", function(event) { gKoCtags.onUnLoad(event); },
 
 function CTagsTreeView(treeElement) {
     this.treeElement = treeElement;
+    this.allItems = [];
     this.items = [];
 
     this.treebox = null;
@@ -425,7 +426,7 @@ CTagsTreeView.prototype = {
                                         count,
                                         tags
                                         );
-        var itemCount = count.value;
+        //var itemCount = count.value;
         var newItems = tags.value;
         var tagFile = tagFileNameOut.value;
 
@@ -434,8 +435,11 @@ CTagsTreeView.prototype = {
         gKoCtags.getElement("koctags-bottomtab-findtext").value = text;
         gKoCtags.getElement("koctags-bottomtab-filename").value = tagFile;
 
-        this.treebox.rowCountChanged(0, newItems.length - this.items.length);
-        this.items = newItems;
+        //this.treebox.rowCountChanged(0, newItems.length - this.items.length);
+        this.allItems = newItems;
+        this.filterArray();
+
+        var itemCount = this.items.length;
 
         if (itemCount == 0) {
             // just a message
@@ -455,6 +459,43 @@ CTagsTreeView.prototype = {
                 gKoCtags.getElement("koctags-ctags-tree").focus();
                 this.selectAndEnsureVisible(0);
             }
+        }
+    },
+
+    filterKeypress : function(event) {
+        try {
+            this.filterArray();
+            if(event.keyCode == 13) {
+                gKoCtags.getElement("koctags-ctags-tree").focus();
+                this.selectAndEnsureVisible(0);
+            }
+        } catch (e) {
+            gKoCtagslog.exception(e);
+        }
+    },
+
+    filterArray : function() {
+        try {
+            var filter = gKoCtags.getElement("koctags-bottomtab-filter").value;
+            //var filter='';
+            var oldLength = this.items.length;
+            //alert("'"+filter+"'");
+            if (filter.length == 0) {
+                this.items = this.allItems;
+                //alert(this.allItems+this.items);
+            } else {
+                this.items = [];
+                for (var i = 0; i < this.allItems.length; i++) {
+                    var item = this.allItems[i];
+                    if ((item.tagfile.indexOf(filter) !== -1)
+                        || (item.taginfo.indexOf(filter) !== -1)) {
+                        this.items.push(item);
+                    }
+                }
+            };
+            this.treebox.rowCountChanged(0, this.items.length - oldLength);
+        } catch (err) {
+            alert(err);
         }
     },
 

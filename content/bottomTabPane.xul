@@ -32,6 +32,9 @@
                             image="chrome://famfamfamsilk/skin/icons/anchor.png"
                             oncommand="gKoCtags.onPinBottomButton(event)"
                             tooltiptext="Fix the CTag file to the displayed one" />
+            <textbox id="koctags-bottomtab-filter" emptytext="Filter" type="search"
+                     onkeypress="gKoCtags.treeView.filterKeypress(event)"
+                     oncommand="gKoCtags.treeView.filterArray()"/>
             <textbox id="koctags-bottomtab-filename"
                      flex="10"
                      readonly="true"
