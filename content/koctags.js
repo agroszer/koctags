@@ -40,15 +40,35 @@
 
 var gKoCtagslog          = ko.logging.getLogger("ko.extensions.koctags")
 
+// XXX: refactor the whole class to "ko.extensions.koctags" later
 var gKoCtags = {
     searchPattern : "",
     prefs : new CTagsPrefs(),
     treeView : null,
 
+    getElement : function(name) {
+        try {
+            var scin = document.getElementById('runoutput-scintilla');
+            if (scin) {
+                // KO6
+                return document.getElementById(name)
+            } else {
+                // KO7
+                return document.getElementById("koctags_ctags_tab").contentDocument.getElementById(name)
+            }
+        } catch (e) {
+            gKoCtagslog.exception(e);
+        }
+        return null;
+    },
+
     onGetDefinitionsBottomButton : function() {
         try {
-            var text = document.getElementById("koctags-bottomtab-findtext").value;
-            var filename = ko.views.manager.currentView.document.displayPath;
+            //alert('onGetDefinitionsBottomButton');
+
+            //var text = document.getElementById("koctags-bottomtab-findtext").value;
+            var text = this.getElement("koctags-bottomtab-findtext").value;
+            var filename = ko.views.manager.currentView.koDoc.displayPath;
             //alert(filename+" "+text);
             this.treeView.fillArray(text, filename);
             this.treeView.refresh();
@@ -61,10 +81,11 @@ var gKoCtags = {
       try {
         var fname = ko.filepicker.openFile();
         if (fname) {
-          document.getElementById("koctags-bottomtab-filename").value = fname;
-
-          document.getElementById("koctags-bottomtab-pinTagFile").checked = true;
-          this.prefs.pinTagFile = true;
+            //document.getElementById("koctags-bottomtab-filename").value = fname;
+            //document.getElementById("koctags-bottomtab-pinTagFile").checked = true;
+            this.getElement("koctags-bottomtab-filename").value = fname;
+            this.getElement("koctags-bottomtab-pinTagFile").checked = true;
+            this.prefs.pinTagFile = true;
         }
       } catch (e) {
           gKoCtagslog.exception(e);
@@ -73,15 +94,17 @@ var gKoCtags = {
 
     onClearFileBottomButton : function(event) {
       try {
-        document.getElementById("koctags-bottomtab-filename").value = '';
+        //document.getElementById("koctags-bottomtab-filename").value = '';
+        this.getElement("koctags-bottomtab-filename").value = '';
       } catch (e) {
-          gKoCtagslog.exception(e);
+        gKoCtagslog.exception(e);
       }
     },
 
     onPinBottomButton : function(event) {
       try {
-        var pin = document.getElementById("koctags-bottomtab-pinTagFile").checked;
+        //var pin = document.getElementById("koctags-bottomtab-pinTagFile").checked;
+        var pin = this.getElement("koctags-bottomtab-pinTagFile").checked;
         this.prefs.pinTagFile = pin;
       } catch (e) {
           gKoCtagslog.exception(e);
@@ -275,13 +298,27 @@ var gKoCtags = {
 
             this.prefsChanged();
 
-            this.treeView = new CTagsTreeView(
-                    document.getElementById("koctags-ctags-tree"));
+            //this.treeView = new CTagsTreeView(
+            //        document.getElementById("koctags-ctags-tree"));
+            this.treeView = new CTagsTreeView(this.getElement("koctags-ctags-tree"));
 
             var obs = DafizillaCommon.getObserverService();
             obs.addObserver(this, "koctags_pref_changed", false);
 
             this.addListeners();
+
+            var scin = document.getElementById('runoutput-scintilla');
+            if (scin) {
+                // KO6
+            } else {
+                // KO7
+                // push ourselves into the ko-pane
+                var widget = document.getElementById("koctags_ctags_tab");
+                if (widget) {
+                    widget.contentWindow.gKoCtags = this;
+                }
+            }
+
         } catch (e) {
             gKoCtagslog.exception(e);
         }
@@ -314,8 +351,9 @@ var gKoCtags = {
 
     onGetDefinitionsHotkey : function(event) {
         try {
+            //alert('onGetDefinitionsHotkey');
             var text = ko.interpolate.getWordUnderCursor();
-            var filename = ko.views.manager.currentView.document.displayPath;
+            var filename = ko.views.manager.currentView.koDoc.displayPath;
             //alert("hotkey "+text);
 
             this.treeView.fillArray(text, filename);
@@ -335,7 +373,8 @@ var gKoCtags = {
             this.CTagSvc.pushSettings(this.prefs.tagFileName,
                                       this.prefs.tagFilePrefix);
 
-            document.getElementById("koctags-bottomtab-pinTagFile").checked = this.prefs.pinTagFile;
+            //document.getElementById("koctags-bottomtab-pinTagFile").checked = this.prefs.pinTagFile;
+            this.getElement("koctags-bottomtab-pinTagFile").checked = this.prefs.pinTagFile;
 
         } catch (e) {
             gKoCtagslog.exception(e);
@@ -369,9 +408,11 @@ CTagsTreeView.prototype = {
         var tags = {};
         var count = {};
 
-        var pin = document.getElementById("koctags-bottomtab-pinTagFile").checked;
+        //var pin = document.getElementById("koctags-bottomtab-pinTagFile").checked;
+        var pin = gKoCtags.getElement("koctags-bottomtab-pinTagFile").checked;
         if (pin) {
-          var tagFileNameIn = document.getElementById("koctags-bottomtab-filename").value;
+          //var tagFileNameIn = document.getElementById("koctags-bottomtab-filename").value;
+          var tagFileNameIn = gKoCtags.getElement("koctags-bottomtab-filename").value;
         } else {
           var tagFileNameIn = '';
         }
@@ -388,8 +429,10 @@ CTagsTreeView.prototype = {
         var newItems = tags.value;
         var tagFile = tagFileNameOut.value;
 
-        document.getElementById("koctags-bottomtab-findtext").value = text;
-        document.getElementById("koctags-bottomtab-filename").value = tagFile;
+        //document.getElementById("koctags-bottomtab-findtext").value = text;
+        //document.getElementById("koctags-bottomtab-filename").value = tagFile;
+        gKoCtags.getElement("koctags-bottomtab-findtext").value = text;
+        gKoCtags.getElement("koctags-bottomtab-filename").value = tagFile;
 
         this.treebox.rowCountChanged(0, newItems.length - this.items.length);
         this.items = newItems;
@@ -408,7 +451,8 @@ CTagsTreeView.prototype = {
             } else {
                 //open the bottom tab
                 ko.uilayout.ensureTabShown('koctags_ctags_tab', true);
-                document.getElementById("koctags-ctags-tree").focus();
+                //document.getElementById("koctags-ctags-tree").focus();
+                gKoCtags.getElement("koctags-ctags-tree").focus();
                 this.selectAndEnsureVisible(0);
             }
         }

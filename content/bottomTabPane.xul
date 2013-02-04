@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://komodo/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://komodo/skin/global/global.css" type="text/css"?>
+<?xml-stylesheet href="chrome://komodo/skin/toolbar.css" type="text/css"?>
+<?xml-stylesheet href="chrome://komodo/skin/platform.css" type="text/css"?>
+<?xml-stylesheet href="chrome://komodo/skin/bindings/sidebar.css" type="text/css"?>
+
+<page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    <vbox flex="1">
+        <toolbar id="toolbar" class="toolbar-background">
+            <toolbargroup class="solo-toolbaritem">
+                <textbox id="koctags-bottomtab-findtext" emptytext="Find"
+                         type="search"
+                         tooltiptext="Enter text to lookup (exact case required) and press Enter"
+                         onkeypress="gKoCtags.onFindKeypress(event)" />
+                <toolbarbutton id="koctags-bottomtab-findbutton"
+                               image="chrome://famfamfamsilk/skin/icons/wand.png"
+                               oncommand="gKoCtags.onGetDefinitionsBottomButton()"
+                               tooltiptext="Click to find an identifier"/>
+            </toolbargroup>
+            <toolbarseparator/>
+            <toolbarbutton id="koctags-bottomtab-openfilebutton"
+                            image="chrome://famfamfamsilk/skin/icons/folder.png"
+                            oncommand="gKoCtags.onOpenFileBottomButton(event)"
+                            tooltiptext="Click to select a CTags file" />
+            <toolbarbutton id="koctags-bottomtab-clearfilebutton"
+                            image="chrome://famfamfamsilk/skin/icons/delete.png"
+                            oncommand="gKoCtags.onClearFileBottomButton(event)"
+                            tooltiptext="Click to clear the CTags file" />
+            <toolbarbutton id="koctags-bottomtab-pinTagFile"
+                            type="checkbox"
+                            image="chrome://famfamfamsilk/skin/icons/anchor.png"
+                            oncommand="gKoCtags.onPinBottomButton(event)"
+                            tooltiptext="Fix the CTag file to the displayed one" />
+            <textbox id="koctags-bottomtab-filename"
+                     flex="10"
+                     readonly="true"
+                     tooltiptext="Shows the CTag file path"/>
+        </toolbar>
+
+        <tree id="koctags-ctags-tree"
+              flex="1"
+              seltype="single"
+              tooltiptext="Double click any item to open the referenced file"
+              onkeypress="gKoCtags.onTreeKeypress(event)" >
+            <treecols>
+                <treecol primary="true"
+                         crop="center"
+                         flex="8"
+                         persist="width"
+                         id="koctags_ctags-filename"
+                         label="Filename" />
+                <splitter class="tree-splitter" />
+                <treecol id="koctags_ctags-taginfo"
+                         flex="12"
+                         label="Info"
+                         persist="width" />
+            </treecols>
+            <treechildren id="koctags_ctags-treechildren"
+                          flex="1"
+                          ondblclick="gKoCtags.onTreeDblClick();"
+                          tooltiptext="Double click any item to open the referenced file" />
+        </tree>
+    </vbox>
+</page>

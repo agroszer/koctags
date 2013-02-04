@@ -269,7 +269,7 @@ class koCTags:
 
     def _tagFileExists(self, path):
         tagFile = os.path.join(path, TAGFILE)
-        if os.path.exists(tagFile):
+        if os.path.exists(tagFile) and os.path.isfile(tagFile):
             return tagFile
 
         for prefix in PREFIXES.split(';'):
@@ -278,11 +278,11 @@ class koCTags:
 
                 #this is an absolute path
                 tagFile = os.path.join(prefix, TAGFILE)
-                if os.path.exists(tagFile):
+                if os.path.exists(tagFile) and os.path.isfile(tagFile):
                     return tagFile
 
             tagFile = os.path.join(path, prefix, TAGFILE)
-            if os.path.exists(tagFile):
+            if os.path.exists(tagFile) and os.path.isfile(tagFile):
                 return tagFile
 
         return ''

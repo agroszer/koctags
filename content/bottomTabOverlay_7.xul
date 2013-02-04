@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<overlay id="koctagsCTagsOverlay-ko7"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <!-- Komodo specific code -->
+    <script type="application/x-javascript"
+            src="chrome://komodo/content/library/logging.js" />
+    <script type="application/x-javascript"
+            src="chrome://komodo/content/library/uilayout.js" />
+
+    <script type="application/x-javascript"
+            src="chrome://koctags/content/common.js" />
+
+    <ko-pane id="workspace_bottom_area">
+        <browser type="ko-widget" id="koctags_ctags_tab" label="CTags"
+                 position="10" insertbefore="codebrowserviewbox"
+                 src="chrome://koctags/content/bottomTabPane.xul"/>
+    </ko-pane>
+
+</overlay>

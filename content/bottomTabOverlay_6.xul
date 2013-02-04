@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<overlay id="koctagsCTagsOverlay"
+<overlay id="koctagsCTagsOverlay-ko6"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <!-- Komodo specific code -->
@@ -11,10 +11,6 @@
 
   <script type="application/x-javascript"
           src="chrome://koctags/content/common.js" />
-  <!--<script type="application/x-javascript"-->
-  <!--        src="chrome://koctags/content/ctags/ctagsTreeview.js" />-->
-  <!--<script type="application/x-javascript"-->
-  <!--        src="chrome://koctags/content/ctags/ctagsOverlay.js" />-->
 
     <menupopup id="menu_view_tabs_popup">
         <menuitem id="show_koctags_ctags_tab2"
