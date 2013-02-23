@@ -16,15 +16,15 @@ interface nsIPykoCTags : nsISupports
 {
     void getCompletion(in wstring fileName,
                        in wstring text,
-                       in PRUint32 maxcount,
-                       out PRUint32 count,
+                       in unsigned long maxcount,
+                       out unsigned long count,
         [array, size_is(count), retval] out wstring uniquetags);
 
     void getDefinitions(in wstring fileName,
                         in wstring text,
                         in wstring tagFileNameIn,
                         out wstring tagFileNameOut,
-                        out PRUint32 count,
+                        out unsigned long count,
         [array, size_is(count)] out koICTagInfo tags);
 
     void pushSettings(in wstring tagFileName,

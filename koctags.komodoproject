@@ -5,7 +5,7 @@
 </folder>
 <file id="52d7ae94-d14f-4871-bc4a-3ded30d9c43e" idref="f40a0ec7-21cd-4ff1-a0fa-62115ba1d04c" name="setup.xul" url="_prj_internal_/setup.xul">
 </file>
-<preference-set idref="e77ee005-1b15-43a0-ad0e-bb349ad34e1f">
+<preference-set idref="e77ee005-1b15-43a0-ad0e-bb349ad34e1f" id="project" preftype="project">
   <boolean id="configured">1</boolean>
   <string id="import_exclude_matches">*.*~;*.bak;*.tmp;CVS;.#*;*.pyo;*.pyc;.svn;*%25*;tmp*.html;.DS_Store;_prj_internal_</string>
   <string id="import_include_matches"></string>
