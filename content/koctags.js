@@ -389,7 +389,10 @@ var gKoCtags = {
     }
 }
 
-window.addEventListener("load", function(event) { gKoCtags.onLoad(event); }, false);
+//window.addEventListener("load", function(event) { gKoCtags.onLoad(event); }, false);
+window.addEventListener("load",
+                        function(event) { setTimeout("gKoCtags.onLoad()", 3000); },
+                        false);
 window.addEventListener("unload", function(event) { gKoCtags.onUnLoad(event); }, false);
 
 
