@@ -44,18 +44,12 @@ var gKoCtagslog          = ko.logging.getLogger("ko.extensions.koctags")
 var gKoCtags = {
     searchPattern : "",
     prefs : new CTagsPrefs(),
+    contentDocument: null,
     treeView : null,
 
     getElement : function(name) {
         try {
-            var scin = document.getElementById('runoutput-scintilla');
-            if (scin) {
-                // KO6
-                return document.getElementById(name)
-            } else {
-                // KO7
-                return document.getElementById("koctags_ctags_tab").contentDocument.getElementById(name)
-            }
+            return this.contentDocument.getElementById(name)
         } catch (e) {
             gKoCtagslog.exception(e);
         }
@@ -94,7 +88,6 @@ var gKoCtags = {
 
     onClearFileBottomButton : function(event) {
       try {
-        //document.getElementById("koctags-bottomtab-filename").value = '';
         this.getElement("koctags-bottomtab-filename").value = '';
       } catch (e) {
         gKoCtagslog.exception(e);
@@ -103,7 +96,6 @@ var gKoCtags = {
 
     onPinBottomButton : function(event) {
       try {
-        //var pin = document.getElementById("koctags-bottomtab-pinTagFile").checked;
         var pin = this.getElement("koctags-bottomtab-pinTagFile").checked;
         this.prefs.pinTagFile = pin;
       } catch (e) {
@@ -127,7 +119,6 @@ var gKoCtags = {
             var pos = this.treeView.currentSelectedItem.taginfo;
 
             this.openFileWithPosition(fileName, pos);
-
         } catch (e) {
             gKoCtagslog.exception(e);
         }
@@ -288,36 +279,57 @@ var gKoCtags = {
         return false;
     },
 
+    waitForTab : function() {
+        // First make sure the tab widget exists ,and then verify the tree is loaded.
+        ko.widgets.getWidgetAsync('koctags_ctags_tab', function() {
+            var delayFunc;
+            var limit = 20; // iterations
+            var delay = 200;  // time in msec
+            delayFunc = function(tryNum) {
+                try {
+                    var tab = ko.widgets.getWidget("koctags_ctags_tab");
+                    if (tab.contentDocument.getElementById("koctags-ctags-tree")) {
+                        gKoCtags.onLoadWithTab(tab);
+                        return;
+                    }
+                } catch(ex) {
+                    //gKoCtagslog.exception(ex);
+                    //gKoCtagslog.info("waitForTab: Failure: " + tryNum + ": "  + ex);
+                };
+                if (tryNum < limit) {
+                    setTimeout(delayFunc, delay, tryNum + 1);
+                } else {
+                    gKoCtagslog.error("waitForTab: Gave up");
+                }
+            }
+            setTimeout(delayFunc, delay, 0);
+        });
+    },
 
     onLoad : function() {
+        this.waitForTab();
+    },
+
+    onLoadWithTab : function(tab) {
         try {
-            //alert("onLoad");
+            //window.openDialog('chrome://global/content/console.xul', '_blank'); // debug console
+
+            // push ourselves into the ko-pane
+            this.contentDocument = tab.contentDocument;
+            tab.contentWindow.gKoCtags = this;
+
+            this.treeView = new CTagsTreeView(this.getElement("koctags-ctags-tree"));
+            //gKoCtagslog.warn("this.treeView filled with"+ this.treeView);
 
             this.CTagSvc = Components.classes["@pyte.hu/koCTags;1"].
                     getService(Components.interfaces.nsIPykoCTags);
 
             this.prefsChanged();
 
-            //this.treeView = new CTagsTreeView(
-            //        document.getElementById("koctags-ctags-tree"));
-            this.treeView = new CTagsTreeView(this.getElement("koctags-ctags-tree"));
-
             var obs = DafizillaCommon.getObserverService();
             obs.addObserver(this, "koctags_pref_changed", false);
 
             this.addListeners();
-
-            var scin = document.getElementById('runoutput-scintilla');
-            if (scin) {
-                // KO6
-            } else {
-                // KO7
-                // push ourselves into the ko-pane
-                var widget = document.getElementById("koctags_ctags_tab");
-                if (widget) {
-                    widget.contentWindow.gKoCtags = this;
-                }
-            }
 
         } catch (e) {
             gKoCtagslog.exception(e);
@@ -373,9 +385,7 @@ var gKoCtags = {
             this.CTagSvc.pushSettings(this.prefs.tagFileName,
                                       this.prefs.tagFilePrefix);
 
-            //document.getElementById("koctags-bottomtab-pinTagFile").checked = this.prefs.pinTagFile;
             this.getElement("koctags-bottomtab-pinTagFile").checked = this.prefs.pinTagFile;
-
         } catch (e) {
             gKoCtagslog.exception(e);
         }
@@ -389,11 +399,29 @@ var gKoCtags = {
     }
 }
 
-//window.addEventListener("load", function(event) { gKoCtags.onLoad(event); }, false);
-window.addEventListener("load",
-                        function(event) { setTimeout("gKoCtags.onLoad()", 3000); },
-                        false);
-window.addEventListener("unload", function(event) { gKoCtags.onUnLoad(event); }, false);
+try {
+    //window.addEventListener("load", function(event) { gKoCtags.onLoad(event); }, false);
+    //window.addEventListener("load",
+    //                        function(event) { setTimeout("gKoCtags.onLoad()", 3000); },
+    //                        false);
+
+    if ("getWidgetAsync" in ko.widgets) {
+        ko.widgets.getWidgetAsync("koctags_ctags_tab",
+            function(widget) {
+                gKoCtags.onLoad(); }
+        );
+    } else {
+        //addEventListener("load", function() { gKoCtags.onLoad(); } );
+        window.setTimeout(function() {
+            window.alert("this version of KO is not supported ko.widgets.getWidgetAsync missing");
+        }, 10000);
+
+    }
+
+    window.addEventListener("unload", function(event) { gKoCtags.onUnLoad(event); }, false);
+} catch (e) {
+    gKoCtagslog.exception(e);
+}
 
 
 function CTagsTreeView(treeElement) {
@@ -433,8 +461,6 @@ CTagsTreeView.prototype = {
         var newItems = tags.value;
         var tagFile = tagFileNameOut.value;
 
-        //document.getElementById("koctags-bottomtab-findtext").value = text;
-        //document.getElementById("koctags-bottomtab-filename").value = tagFile;
         gKoCtags.getElement("koctags-bottomtab-findtext").value = text;
         gKoCtags.getElement("koctags-bottomtab-filename").value = tagFile;
 
