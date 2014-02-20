@@ -59,7 +59,7 @@ var gKoCtags = {
     onGetDefinitionsBottomButton : function() {
         try {
             //alert('onGetDefinitionsBottomButton');
-
+            gKoCtags.getElement("koctags-bottomtab-filter").value = '';
             var text = this.getElement("koctags-bottomtab-findtext").value;
             var filename = ko.views.manager.currentView.koDoc.displayPath;
             //alert(filename+" "+text);
@@ -361,6 +361,7 @@ var gKoCtags = {
     onGetDefinitionsHotkey : function(event) {
         try {
             //alert('onGetDefinitionsHotkey');
+            gKoCtags.getElement("koctags-bottomtab-filter").value = '';
             var text = ko.interpolate.getWordUnderCursor();
             var filename = ko.views.manager.currentView.koDoc.displayPath;
             //alert("hotkey "+text);
