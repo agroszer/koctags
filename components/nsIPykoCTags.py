@@ -41,6 +41,7 @@
 # do NOT keep the tagfile open
 
 import os, traceback, logging
+import re
 import sys
 import stat
 import time
@@ -78,6 +79,7 @@ class Tag(object):
         self.tagfile = parts[1]
         self.taginfo = parts[2]
         self.fpos = fpos
+        self.score = 0
 
 HEADERMAP = {
     '!_TAG_FILE_FORMAT': 'tagFileFormat',
@@ -114,7 +116,7 @@ class CTagFile(object):
             if v:
                 setattr(self, v, None)
 
-        line ="!"
+        line = "!"
         while line.startswith('!'):
             line = fle.readline()
             parts = line.split('\t')
@@ -126,7 +128,6 @@ class CTagFile(object):
             raise ValueError("tagfile sorted != 1")
         if self.tagFileFormat not in ('1','2'):
             raise ValueError("tagfile format not in 1,2")
-
 
     def parse(self, line, fpos):
         return Tag(line, fpos)
@@ -224,7 +225,7 @@ class CTagFile(object):
 
         return fnd
 
-    def getDefinitions(self, text, stat):
+    def getDefinitions(self, text, hint, stat):
         """get ALL definitions for a given token"""
         fnd = []
         fle = open(self.filename, 'r')
@@ -244,12 +245,17 @@ class CTagFile(object):
                 fnd.append(first)
                 first = self._readline(fle, stat=stat)
 
-        #put class and def's first
-        fnd.sort(
-            key=lambda item:(
-                '0' if ('class' in item.taginfo
-                        or 'def' in item.taginfo
-                        or 'function' in item.taginfo) else '1')+item.taginfo)
+        ##put class and def's first
+        #fnd.sort(
+        #    key=lambda item:(
+        #        '0' if ('class' in item.taginfo
+        #                or 'def' in item.taginfo
+        #                or 'function' in item.taginfo) else '1')+item.taginfo)
+        hintparts = filter(lambda i: len(i) > 1, re.split(r"[.:/\+ ]", hint))
+        for item in fnd:
+            item.score = sum([1 if part in item.tagfile.lower() else 0
+                              for part in hintparts])
+        fnd.sort(key=lambda i: i.score, reverse=True)
 
         return fnd
 
@@ -260,6 +266,7 @@ TAGFILES = None
 FILETOTAGMAP = None
 TAGFILE = 'tags'
 PREFIXES = ''
+
 
 class koCTags:
     if components:
@@ -352,11 +359,11 @@ class koCTags:
         stat.finish()
         return rv
 
-    def getDefinitions(self, fileName, text, tagFileNameIn=''):
+    def getDefinitions(self, fileName, text, hint, tagFileNameIn=''):
         stat = Stats()
 
         log.debug('called getDefinitions with %s %s %s' % (
-            fileName, text, tagFileNameIn) )
+            fileName, text, tagFileNameIn))
 
         if tagFileNameIn:
             tagFile = tagFileNameIn
@@ -371,7 +378,7 @@ class koCTags:
         if tags is None:
             return '', []
 
-        fnd = tags.getDefinitions(text, stat)
+        fnd = tags.getDefinitions(text, hint + fileName, stat)
         log.debug('getDefinitions len(fnd)=%s', len(fnd))
 
         stat.finish()
@@ -420,11 +427,11 @@ def test_suite():
         def testGetDef(self):
             obj = koCTags()
 
-            rv = obj.getDefinitions(__file__, 'ZzZz')
-            self.assertEqual(rv[0], 'CVS\\hugetags')
+            rv = obj.getDefinitions(__file__, 'ZzZz', '')
+            self.assertEqual(rv[0], 'CVS/hugetags')
             self.assertEqual(len(rv[1]), 0)
 
-            rv = obj.getDefinitions(__file__, 'EditForm')
+            rv = obj.getDefinitions(__file__, 'EditForm', '')
             self.assertEqual(len(rv[1]), 1)
             first = rv[1][0]
 
@@ -432,13 +439,13 @@ def test_suite():
             self.assertEqual(first.tagname, 'EditForm')
             self.assertEqual(first.tagfile, '/home/adi/zopefix/z3c.form/src/z3c/form/form.py')
 
-            rv = obj.getDefinitions(__file__, 'Blob')
+            rv = obj.getDefinitions(__file__, 'Blob', '')
             self.assertEqual(len(rv[1]), 6)
 
             for tag in rv[1]:
                 self.assertEqual(tag.tagname, 'Blob')
 
-            rv = obj.getDefinitions(__file__, 'Data')
+            rv = obj.getDefinitions(__file__, 'Data', '')
             self.assertEqual(len(rv[1]), 19)
 
             for tag in rv[1]:

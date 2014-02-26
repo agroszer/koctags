@@ -6,6 +6,7 @@ interface koICTagInfo : nsISupports
     attribute wstring tagname;
     attribute wstring tagfile;
     attribute wstring taginfo;
+    attribute long score;
 
     //we dont care about fpos here
     //attribute PRUint32 fpos;
@@ -22,6 +23,7 @@ interface nsIPykoCTags : nsISupports
 
     void getDefinitions(in wstring fileName,
                         in wstring text,
+                        in wstring hint,
                         in wstring tagFileNameIn,
                         out wstring tagFileNameOut,
                         out unsigned long count,

@@ -40,6 +40,9 @@
 
 var gKoCtagslog          = ko.logging.getLogger("ko.extensions.koctags")
 
+const DELIMITER_LEFT = ' "'+"'({[<"
+const DELIMITER_ANY = DELIMITER_LEFT + ")}]>;"
+
 // XXX: refactor the whole class to "ko.extensions.koctags" later
 var gKoCtags = {
     searchPattern : "",
@@ -63,7 +66,7 @@ var gKoCtags = {
             var text = this.getElement("koctags-bottomtab-findtext").value;
             var filename = ko.views.manager.currentView.koDoc.displayPath;
             //alert(filename+" "+text);
-            this.treeView.fillArray(text, filename);
+            this.treeView.fillArray(text, filename, '');
             this.treeView.refresh();
         } catch (e) {
             gKoCtagslog.exception(e);
@@ -276,6 +279,48 @@ var gKoCtags = {
         return false;
     },
 
+    findHint : function () {
+        var ke = ko.views.manager.currentView.scimoz;
+        var curinsert = ke.currentPos;
+        var security = 1024;
+        var found = false;
+        var lmove = 0;
+        var startpos = 0;
+        var endpos = 0;
+        while ((lmove < security) && !found) {
+            var lchar = ke.getWCharAt(curinsert - lmove);
+            var lidx = DELIMITER_LEFT.indexOf(lchar);
+            if (lidx > -1) {
+                startpos = curinsert - lmove+1;
+                var txt = ke.getTextRange(startpos, curinsert);
+                //alert('x'+txt);
+                found = true;
+            }
+            lmove += 1;
+        }
+
+        if (!found) {
+            return '';
+        }
+
+        found = false;
+        var rmove = 0;
+        while ((rmove < security) && !found) {
+            var lchar = ke.getWCharAt(curinsert + rmove);
+            var lidx = DELIMITER_ANY.indexOf(lchar);
+            if (lidx > -1) {
+                endpos = curinsert + rmove;
+                var txt = ke.getTextRange(startpos, endpos);
+                //alert('x'+txt);
+                found = true;
+                return txt;
+            }
+            rmove += 1;
+        }
+
+        return '';
+    },
+
     waitForTab : function() {
         // First make sure the tab widget exists ,and then verify the tree is loaded.
         ko.widgets.getWidgetAsync('koctags_ctags_tab', function() {
@@ -363,15 +408,15 @@ var gKoCtags = {
             //alert('onGetDefinitionsHotkey');
             gKoCtags.getElement("koctags-bottomtab-filter").value = '';
             var text = ko.interpolate.getWordUnderCursor();
+            var hint = gKoCtags.findHint();
             var filename = ko.views.manager.currentView.koDoc.displayPath;
             //alert("hotkey "+text);
 
-            this.treeView.fillArray(text, filename);
+            this.treeView.fillArray(text, filename, hint);
             this.treeView.refresh();
         } catch (e) {
             gKoCtagslog.exception(e);
         }
-
     },
 
     prefsChanged : function(subject, data) {
@@ -433,7 +478,14 @@ function CTagsTreeView(treeElement) {
 }
 
 CTagsTreeView.prototype = {
-    fillArray : function(text, fileName) {
+    fillArray : function(text, fileName, hint) {
+        if (hint) {
+            ko.statusBar.AddMessage(
+                "Hint: "+hint,
+                "open_errs", 3000, true);
+
+        }
+
         var tagFileNameOut = {};
         var tags = {};
         var count = {};
@@ -448,6 +500,7 @@ CTagsTreeView.prototype = {
         gKoCtags.CTagSvc.getDefinitions(
                                         fileName,
                                         text,
+                                        hint,
                                         tagFileNameIn,
                                         tagFileNameOut,
                                         count,
