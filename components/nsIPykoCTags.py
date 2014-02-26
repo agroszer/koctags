@@ -101,9 +101,9 @@ class CTagFile(object):
         self.size = statinfo[stat.ST_SIZE]
         self.lastmod = statinfo[stat.ST_MTIME]
 
-        log.debug("%s filesize %s" % (self.filename, self.size))
+        #log.debug("%s filesize %s" % (self.filename, self.size))
         recsize = self.size/512
-        log.debug("est record count %s" % recsize)
+        #log.debug("est record count %s" % recsize)
 
     def getHeader(self, fle):
         #!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
@@ -142,13 +142,13 @@ class CTagFile(object):
             fle.seek(fpos)
             if fpos <> 0:
                 # may not start at a line break! Discard.
-                log.debug("read at %s" % fpos)
+                #log.debug("read at %s" % fpos)
                 baddata = fle.readline()
                 if stat:
                     stat.reads += 1
 
         linepos = fle.tell()
-        log.debug("read next line at %s" % linepos)
+        #log.debug("read next line at %s" % linepos)
         line = fle.readline()
 
         if stat:
@@ -158,7 +158,7 @@ class CTagFile(object):
             return None
 
         tag = self.parse(line, linepos)
-        log.debug("read %s, %s" % (tag.tagname, tag.tagfile))
+        #log.debug("read %s, %s" % (tag.tagname, tag.tagfile))
         return tag
 
     def _findKey(self, fle, textToFind, startpoint=0, endpoint=None,
