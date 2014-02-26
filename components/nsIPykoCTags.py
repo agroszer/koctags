@@ -266,6 +266,7 @@ TAGFILES = None
 FILETOTAGMAP = None
 TAGFILE = 'tags'
 PREFIXES = ''
+LAST_USED_TAGFILE = None
 
 
 class koCTags:
@@ -360,6 +361,7 @@ class koCTags:
         return rv
 
     def getDefinitions(self, fileName, text, hint, tagFileNameIn=''):
+        global LAST_USED_TAGFILE
         stat = Stats()
 
         log.debug('called getDefinitions with %s %s %s' % (
@@ -372,16 +374,23 @@ class koCTags:
         log.debug('getDefinitions tagFile=%s', tagFile)
 
         if tagFile is None:
-            return '', []
+            if LAST_USED_TAGFILE is None:
+                return '', []
+            else:
+                tagFile = LAST_USED_TAGFILE
+
         tags = self._openTagsFile(tagFile)
 
         if tags is None:
+            LAST_USED_TAGFILE = None
             return '', []
 
         fnd = tags.getDefinitions(text, hint + fileName, stat)
         log.debug('getDefinitions len(fnd)=%s', len(fnd))
 
         stat.finish()
+
+        LAST_USED_TAGFILE = tagFile
         return tagFile, fnd
 
     def pushSettings(self, tagFileName, tagFilePrefix):
