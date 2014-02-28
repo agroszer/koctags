@@ -97,7 +97,7 @@ function(value) {
 
 CTagsPrefs.prototype.__defineGetter__("alwaysOpenFirst",
 function() {
-    return this.getBool("alwaysOpenFirst", false);
+    return this.getBool("alwaysOpenFirst", true);
 });
 
 CTagsPrefs.prototype.__defineSetter__("alwaysOpenFirst",
