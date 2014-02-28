@@ -44,12 +44,14 @@ var prefs = new CTagsPrefs();
 var tagFileNameWidget;
 var tagFilePrefixWidget;
 var pinTagFileWidget;
+var reuseLastTagFileWidget;
 var alwaysOpenFirstWidget;
 
 function OnPreferencePageOK(prefset) {
     prefs.tagFileName = tagFileNameWidget.value;
     prefs.tagFilePrefix = tagFilePrefixWidget.value;
     prefs.pinTagFile = pinTagFileWidget.checked;
+    prefs.reuseLastTagFile = reuseLastTagFileWidget.checked;
     prefs.alwaysOpenFirst = alwaysOpenFirstWidget.checked;
 
     prefs.save();
@@ -62,6 +64,7 @@ function OnPreferencePageInitalize(prefset) {
     tagFileNameWidget = document.getElementById("tagFileName");
     tagFilePrefixWidget = document.getElementById("tagFilePrefix");
     pinTagFileWidget = document.getElementById("pinTagFile");
+    reuseLastTagFileWidget = document.getElementById("reuseLastTagFile");
     alwaysOpenFirstWidget = document.getElementById("alwaysOpenFirst");
 }
 
@@ -70,6 +73,7 @@ function OnPreferencePageLoading(prefset) {
     tagFileNameWidget.value = prefs.tagFileName;
     tagFilePrefixWidget.value = prefs.tagFilePrefix;
     pinTagFileWidget.checked = prefs.pinTagFile;
+    reuseLastTagFileWidget.checked = prefs.reuseLastTagFile;
     alwaysOpenFirstWidget.checked = prefs.alwaysOpenFirst;
 }
 

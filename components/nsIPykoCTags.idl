@@ -30,7 +30,8 @@ interface nsIPykoCTags : nsISupports
         [array, size_is(count)] out koICTagInfo tags);
 
     void pushSettings(in wstring tagFileName,
-                      in wstring tagFilePrefix);
+                      in wstring tagFilePrefix,
+                      in boolean reuseLastTagFile);
 
     //void get_possible_browsers(out PRUint32 count,
     //    [retval, array, size_is(count)] out wstring paths);

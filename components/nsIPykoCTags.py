@@ -266,6 +266,7 @@ TAGFILES = None
 FILETOTAGMAP = None
 TAGFILE = 'tags'
 PREFIXES = ''
+REUSE_LAST_TAGFILE = False
 LAST_USED_TAGFILE = None
 
 
@@ -371,13 +372,14 @@ class koCTags:
             tagFile = tagFileNameIn
         else:
             tagFile = self._findTagsFile(fileName)
+
+        if not tagFile and REUSE_LAST_TAGFILE:
+            tagFile = LAST_USED_TAGFILE
+
         log.debug('getDefinitions tagFile=%s', tagFile)
 
         if tagFile is None:
-            if LAST_USED_TAGFILE is None:
-                return '', []
-            else:
-                tagFile = LAST_USED_TAGFILE
+            return '', []
 
         tags = self._openTagsFile(tagFile)
 
@@ -393,8 +395,9 @@ class koCTags:
         LAST_USED_TAGFILE = tagFile
         return tagFile, fnd
 
-    def pushSettings(self, tagFileName, tagFilePrefix):
-        log.debug('pushSettings %s %s' % (tagFileName, tagFilePrefix))
+    def pushSettings(self, tagFileName, tagFilePrefix, reuseLastTagFile):
+        log.debug('pushSettings %s %s %s' % (
+            tagFileName, tagFilePrefix, reuseLastTagFile))
 
         global PREFIXES
         PREFIXES = tagFilePrefix
@@ -404,6 +407,9 @@ class koCTags:
             TAGFILE = tagFileName
         else:
             TAGFILE = 'tags'
+
+        global REUSE_LAST_TAGFILE
+        REUSE_LAST_TAGFILE = reuseLastTagFile
 
     #def globol(self, message):
     #    log.debug('called globol')

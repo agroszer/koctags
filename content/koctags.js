@@ -426,7 +426,8 @@ var gKoCtags = {
             this.prefs = new CTagsPrefs();
 
             this.CTagSvc.pushSettings(this.prefs.tagFileName,
-                                      this.prefs.tagFilePrefix);
+                                      this.prefs.tagFilePrefix,
+                                      this.prefs.reuseLastTagFile);
 
             this.getElement("koctags-bottomtab-pinTagFile").checked = this.prefs.pinTagFile;
         } catch (e) {

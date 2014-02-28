@@ -4,7 +4,7 @@
     <Description about="urn:mozilla:install-manifest">
         <em:id>koctags@pyte.hu</em:id>
         <em:name>koctags</em:name>
-        <em:version>0.9</em:version>
+        <em:version>0.10</em:version>
         <em:description>exuberant Ctags support for Komodo</em:description>
         <em:creator>Adam Groszer</em:creator>
         <em:homepageURL>http://community.activestate.com/xpi/koctags</em:homepageURL>
