@@ -95,6 +95,16 @@ function(value) {
     this.setBool("pinTagFile", value);
 });
 
+CTagsPrefs.prototype.__defineGetter__("alwaysOpenFirst",
+function() {
+    return this.getBool("alwaysOpenFirst", false);
+});
+
+CTagsPrefs.prototype.__defineSetter__("alwaysOpenFirst",
+function(value) {
+    this.setBool("alwaysOpenFirst", value);
+});
+
 //CTagsPrefs.prototype.__defineGetter__("editRememberCurrentPos",
 //function() {
 //    return this.getBool("editRememberCurrentPos", false);

@@ -39,4 +39,5 @@
   </groupbox>
 
   <checkbox id="pinTagFile" label="Pin CTag file"/>
+  <checkbox id="alwaysOpenFirst" label="Always open first hit -- regardless how many hits there are"/>
 </window>

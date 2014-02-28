@@ -44,11 +44,13 @@ var prefs = new CTagsPrefs();
 var tagFileNameWidget;
 var tagFilePrefixWidget;
 var pinTagFileWidget;
+var alwaysOpenFirstWidget;
 
 function OnPreferencePageOK(prefset) {
     prefs.tagFileName = tagFileNameWidget.value;
     prefs.tagFilePrefix = tagFilePrefixWidget.value;
     prefs.pinTagFile = pinTagFileWidget.checked;
+    prefs.alwaysOpenFirst = alwaysOpenFirstWidget.checked;
 
     prefs.save();
     var obs = DafizillaCommon.getObserverService();
@@ -60,6 +62,7 @@ function OnPreferencePageInitalize(prefset) {
     tagFileNameWidget = document.getElementById("tagFileName");
     tagFilePrefixWidget = document.getElementById("tagFilePrefix");
     pinTagFileWidget = document.getElementById("pinTagFile");
+    alwaysOpenFirstWidget = document.getElementById("alwaysOpenFirst");
 }
 
 function OnPreferencePageLoading(prefset) {
@@ -67,6 +70,7 @@ function OnPreferencePageLoading(prefset) {
     tagFileNameWidget.value = prefs.tagFileName;
     tagFilePrefixWidget.value = prefs.tagFilePrefix;
     pinTagFileWidget.checked = prefs.pinTagFile;
+    alwaysOpenFirstWidget.checked = prefs.alwaysOpenFirst;
 }
 
 function CTagsPreferencesOnLoad() {

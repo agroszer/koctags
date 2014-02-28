@@ -526,15 +526,16 @@ CTagsTreeView.prototype = {
                 "open_errs", 3000, true);
 
         } else {
-            if (itemCount == 1) {
-                //just open the file
-                gKoCtags.openFileWithPosition(newItems[0].tagfile,
-                                              newItems[0].taginfo)
-            } else {
+            if (itemCount > 1) {
                 //open the bottom tab
                 ko.uilayout.ensureTabShown('koctags_ctags_tab', true);
                 gKoCtags.getElement("koctags-ctags-tree").focus();
                 this.selectAndEnsureVisible(0);
+            }
+            if (itemCount == 1 || gKoCtags.prefs.alwaysOpenFirst) {
+                //just open the file
+                gKoCtags.openFileWithPosition(newItems[0].tagfile,
+                                              newItems[0].taginfo)
             }
         }
     },
