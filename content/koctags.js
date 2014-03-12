@@ -282,6 +282,9 @@ var gKoCtags = {
     findHint : function () {
         var ke = ko.views.manager.currentView.scimoz;
         var curinsert = ke.currentPos;
+        var curlpos = ke.lineFromPosition(curinsert);
+        var linestart = ke.positionFromLine(curlpos);
+        var lineend = ke.getLineEndPosition(curlpos);
         var security = 1024;
         var found = false;
         var lmove = 0;
@@ -290,7 +293,7 @@ var gKoCtags = {
         while ((lmove < security) && !found) {
             var lchar = ke.getWCharAt(curinsert - lmove);
             var lidx = DELIMITER_LEFT.indexOf(lchar);
-            if (lidx > -1) {
+            if ((lidx > -1) || ((curinsert - lmove + 1) == linestart)) {
                 startpos = curinsert - lmove+1;
                 var txt = ke.getTextRange(startpos, curinsert);
                 //alert('x'+txt);
@@ -308,7 +311,7 @@ var gKoCtags = {
         while ((rmove < security) && !found) {
             var lchar = ke.getWCharAt(curinsert + rmove);
             var lidx = DELIMITER_ANY.indexOf(lchar);
-            if (lidx > -1) {
+            if ((lidx > -1) || ((curinsert + rmove) == lineend)) {
                 endpos = curinsert + rmove;
                 var txt = ke.getTextRange(startpos, endpos);
                 //alert('x'+txt);
