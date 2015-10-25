@@ -410,8 +410,15 @@ var gKoCtags = {
         try {
             //alert('onGetDefinitionsHotkey');
             gKoCtags.getElement("koctags-bottomtab-filter").value = '';
-            var text = ko.interpolate.getWordUnderCursor();
-            var hint = gKoCtags.findHint();
+            var ke = ko.views.manager.currentView.scimoz;
+            if (ke.selectionEnd == ke.selectionStart) {
+                // if nothing selected
+                var text = ko.interpolate.getWordUnderCursor();
+                var hint = gKoCtags.findHint();
+            } else {
+                var text = ko.interpolate.interpolateStrings('%s');
+                var hint = '';
+            }
             var filename = ko.views.manager.currentView.koDoc.displayPath;
             //alert("hotkey "+text);
 
