@@ -40,7 +40,7 @@
 
 var gKoCtagslog          = ko.logging.getLogger("ko.extensions.koctags")
 
-const DELIMITER_LEFT = ' "'+"'({[<"
+const DELIMITER_LEFT = ' "'+"'({[<,:"
 const DELIMITER_ANY = DELIMITER_LEFT + ")}]>;"
 
 // XXX: refactor the whole class to "ko.extensions.koctags" later
