@@ -424,62 +424,65 @@ class koCTags:
     #            log.debug('%s', exc)
 
 
-
 def test_suite():
     class CtagTestsHuge(unittest.TestCase):
         def setUp(self):
-            fname = os.path.join('CVS', 'hugetags')
+            fname = os.path.join('..', '_prj_internal_', 'hugetags')
             if not os.path.exists(fname):
                 import bz2
                 open(fname, "wb").write(bz2.BZ2File(fname+'.bz2', "rb").read())
 
             #got to place it here, otherwise it gets into the xpi
             global PREFIXES
-            PREFIXES = 'CVS'
+            PREFIXES = '_prj_internal_'
             global TAGFILE
             TAGFILE = 'hugetags'
 
         def testGetDef(self):
             obj = koCTags()
 
-            rv = obj.getDefinitions(__file__, 'ZzZz', '')
-            self.assertEqual(rv[0], 'CVS/hugetags')
+            fname = os.path.join(os.path.dirname(__file__), '..', 'README.md')
+
+            rv = obj.getDefinitions(fname, 'ZzZz', '')
+            self.assertEqual(rv[0], './../_prj_internal_/hugetags')
             self.assertEqual(len(rv[1]), 0)
 
-            rv = obj.getDefinitions(__file__, 'EditForm', '')
+            rv = obj.getDefinitions(fname, 'EditForm', '')
             self.assertEqual(len(rv[1]), 1)
             first = rv[1][0]
 
             #self.assertEqual(first.fpos, 1870341)
             self.assertEqual(first.tagname, 'EditForm')
-            self.assertEqual(first.tagfile, '/home/adi/zopefix/z3c.form/src/z3c/form/form.py')
+            self.assertEqual(first.tagfile,
+                             '/home/adi/zopefix/z3c.form/src/z3c/form/form.py')
 
-            rv = obj.getDefinitions(__file__, 'Blob', '')
+            rv = obj.getDefinitions(fname, 'Blob', '')
             self.assertEqual(len(rv[1]), 6)
 
             for tag in rv[1]:
                 self.assertEqual(tag.tagname, 'Blob')
 
-            rv = obj.getDefinitions(__file__, 'Data', '')
+            rv = obj.getDefinitions(fname, 'Data', '')
             self.assertEqual(len(rv[1]), 19)
 
             for tag in rv[1]:
                 self.assertEqual(tag.tagname, 'Data')
 
-
         def testGetCompl(self):
             obj = koCTags()
 
-            rv = obj.getCompletion(__file__, 'ZzZz', 100)
+            fname = os.path.join(os.path.dirname(__file__), '..', 'README.md')
+
+            rv = obj.getCompletion(fname, 'ZzZz', 100)
             self.assertEqual(len(rv), 0)
 
-            rv = obj.getCompletion(__file__, 'EditForm', 100)
+            rv = obj.getCompletion(fname, 'EditForm', 100)
             self.assertEqual(len(rv), 1)
             first = rv[0]
 
             self.assertEqual(first, 'EditForm')
 
-            rv = obj.getCompletion(__file__, 'Bucket', 10)
+            rv = obj.getCompletion(fname, 'Bucket', 10)
             self.assertEqual(len(rv), 10)
 
             for tag in rv:
@@ -496,21 +499,19 @@ def test_suite():
             self.assertEqual(rv[8], 'Bucket_init')
             self.assertEqual(rv[9], 'Bucket_iteritems')
 
-
-            rv = obj.getCompletion(__file__, 'CommandP', 10)
+            rv = obj.getCompletion(fname, 'CommandP', 10)
             self.assertEqual(len(rv), 2)
 
             self.assertEqual(rv[0], 'CommandProcessor')
             self.assertEqual(rv[1], 'CommandPush')
 
-            rv = obj.getCompletion(__file__, 'Comment', 10)
+            rv = obj.getCompletion(fname, 'Comment', 10)
             self.assertEqual(len(rv), 4)
 
             self.assertEqual(rv[0], 'Comment')
             self.assertEqual(rv[1], 'CommentHandler')
             self.assertEqual(rv[2], 'CommentPattern')
             self.assertEqual(rv[3], 'CommentTests')
-
 
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(CtagTestsHuge))
